@@ -18,9 +18,8 @@ typedef long long longlong;
 
 enum {
 	s_initial,
-	s_onekey_1,
+	s_onekey,
 	s_twokeys,
-	s_onekey_2,
 	s_jam
 };
 
@@ -36,18 +35,18 @@ static int processEvent(struct keys *keys, unsigned short code, int value)
 {
 	int res=0;
 	if (numPressed<1) {
-		res=(keys->state==s_onekey_2);
 		keys->state=s_initial;
 	} else if (numPressed==1) {
 		if (keys->state==s_initial && value && (code==keys->key1 || code==keys->key2)) {
-			keys->state=s_onekey_1;
+			keys->state=s_onekey;
 		} else if (keys->state==s_twokeys && !value && (code==keys->key1 || code==keys->key2)) {
-			keys->state=s_onekey_2;
+			keys->state=s_onekey;
+			res=1;
 		} else {
 			keys->state=s_jam;
 		}
 	} else if (numPressed==2) {
-		keys->state=(keys->state==s_onekey_1 && value && (code==keys->key1 || code==keys->key2)) ?
+		keys->state=(keys->state==s_onekey && value && (code==keys->key1 || code==keys->key2)) ?
 			s_twokeys : s_jam;
 	} else {
 		keys->state=s_jam;
